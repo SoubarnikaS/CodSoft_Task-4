@@ -1,4 +1,13 @@
+TASK 4 :
 TASK 4
+1.Create a class to represent the ATM machine.
+2. Design the user interface for the ATM, including options such as withdrawing, depositing, and checking the balance.
+3. Implement methods for each option, such as withdraw(amount), deposit(amount), and checkBalance().
+4. Create a class to represent the user's bank account, which stores the account balance.
+5. Connect the ATM class with the user's bank account class to access and modify the account balance.
+6. Validate user input to ensure it is within acceptable limits (e.g., sufficient balance for withdrawals).
+7. Display appropriate messages to the user based on their chosen options and the success or failure of their transactions.
+
 Source Code :
 
 import java.awt.*;
@@ -9,23 +18,56 @@ public class ATMInterface {
     static int balance = 1000000;
     private static JTextArea choice;
 
-    public static void depositAmount(JTextArea deposit) {
-        JFrame depositFrame = new JFrame("Deposit Amount");
-        deposit = new JTextArea(10, 20);
-        depositFrame.add(deposit);
-        depositFrame.setVisible(true);
+    public static void deposit() {
+        String deposit = JOptionPane.showInputDialog(null, "Enter the amount ");
+        int inputDeposit = Integer.parseInt(deposit);
+        balance += inputDeposit;
+        JOptionPane.showMessageDialog(null, "Amount Deposited : " + deposit + "\n Balance : " + balance);
+    }
 
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int screenHeight = screenSize.height;
-        int screenWidth = screenSize.width;
+    public static void withdraw() {
 
-        depositFrame.setSize(screenWidth / 3, screenHeight / 2);
-        depositFrame.setResizable(false);
-        depositFrame.setLocation(500, 250);
+        String withdraw = JOptionPane.showInputDialog(null, "Enter the amount ");
+        int inputWithdraw = Integer.parseInt(withdraw);
 
-        depositFrame.setVisible(true);
+        while (inputWithdraw > balance) {
+            withdraw = JOptionPane.showInputDialog(null, "Insufficient Funds! Enter less amount!",
+                    JOptionPane.ERROR_MESSAGE);
+            inputWithdraw = Integer.parseInt(withdraw);
+        }
 
+        if (inputWithdraw < balance) {
+            balance -= inputWithdraw;
+            JOptionPane.showMessageDialog(null,
+                    "Amount Withdrawed : " + inputWithdraw + "\n Balance : " + balance);
+        }
+    }
+
+    public static void changePin() {
+
+        String currPin = JOptionPane.showInputDialog(null, "Enter your current pin ");
+        int currentPin = Integer.parseInt(currPin);
+        int attempts = 3;
+
+        while (currentPin != pin && attempts != 1) {
+            --attempts;
+            currPin = JOptionPane.showInputDialog(null, "Incorrect Pin!\n Enter the correct Pin",
+                    "Invalid Pin", JOptionPane.ERROR_MESSAGE);
+            currentPin = Integer.parseInt(currPin);
+        }
+
+        if (attempts == 1 && currentPin != pin) {
+            JOptionPane.showMessageDialog(null, "Account Locked!\n Exiting the ATM!",
+                    "Exceeded Maximum Attempts", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+
+        if (currentPin == pin) {
+            String nPin = JOptionPane.showInputDialog(null, "Enter your new pin");
+            int updatedPin = Integer.parseInt(nPin);
+            pin = updatedPin;
+            JOptionPane.showMessageDialog(null, "Pin Updated!");
+        }
     }
 
     public static void displayChoices() {
@@ -66,57 +108,17 @@ public class ATMInterface {
 
                 case 2:
 
-                    String deposit = JOptionPane.showInputDialog(null, "Enter the amount ");
-                    int inputDeposit = Integer.parseInt(deposit);
-                    balance += inputDeposit;
-                    JOptionPane.showMessageDialog(null, "Amount Deposited : " + deposit + "\n Balance : " + balance);
+                    deposit();
                     break;
 
                 case 3:
 
-                    String withdraw = JOptionPane.showInputDialog(null, "Enter the amount ");
-                    int inputWithdraw = Integer.parseInt(withdraw);
-
-                    while (inputWithdraw > balance) {
-                        withdraw = JOptionPane.showInputDialog(null, "Insufficient Funds! Enter less amount!",
-                                JOptionPane.ERROR_MESSAGE);
-                        inputWithdraw = Integer.parseInt(withdraw);
-                    }
-
-                    if (inputWithdraw < balance) {
-                        balance -= inputWithdraw;
-                        JOptionPane.showMessageDialog(null,
-                                "Amount Withdrawed : " + inputWithdraw + "\n Balance : " + balance);
-                    }
-
+                    withdraw();
                     break;
 
                 case 4:
 
-                    String currPin = JOptionPane.showInputDialog(null, "Enter your current pin ");
-                    int currentPin = Integer.parseInt(currPin);
-                    int attempts = 3;
-
-                    while (currentPin != pin && attempts != 1) {
-                        --attempts;
-                        currPin = JOptionPane.showInputDialog(null, "Incorrect Pin!\n Enter the correct Pin",
-                                "Invalid Pin", JOptionPane.ERROR_MESSAGE);
-                        currentPin = Integer.parseInt(currPin);
-                    }
-
-                    if (attempts == 1 && currentPin != pin) {
-                        JOptionPane.showMessageDialog(null, "Account Locked!\n Exiting the ATM!",
-                                "Exceeded Maximum Attempts", JOptionPane.ERROR_MESSAGE);
-                        System.exit(0);
-                    }
-
-                    if (currentPin == pin) {
-                        String nPin = JOptionPane.showInputDialog(null, "Enter your new pin");
-                        int updatedPin = Integer.parseInt(nPin);
-                        pin = updatedPin;
-                        JOptionPane.showMessageDialog(null, "Pin Updated!");
-                    }
-
+                    changePin();
                     break;
 
                 case 5:
@@ -156,3 +158,4 @@ public class ATMInterface {
 
     }
 }
+
