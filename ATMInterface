@@ -1,0 +1,158 @@
+TASK 4
+Source Code :
+
+import java.awt.*;
+import javax.swing.*;
+
+public class ATMInterface {
+    static int pin = 9487;
+    static int balance = 1000000;
+    private static JTextArea choice;
+
+    public static void depositAmount(JTextArea deposit) {
+        JFrame depositFrame = new JFrame("Deposit Amount");
+        deposit = new JTextArea(10, 20);
+        depositFrame.add(deposit);
+        depositFrame.setVisible(true);
+
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+
+        depositFrame.setSize(screenWidth / 3, screenHeight / 2);
+        depositFrame.setResizable(false);
+        depositFrame.setLocation(500, 250);
+
+        depositFrame.setVisible(true);
+
+    }
+
+    public static void displayChoices() {
+        JFrame choiceFrame = new JFrame("Choose Your Operation");
+        choice = new JTextArea(20, 50);
+        choiceFrame.add(choice);
+        choiceFrame.setVisible(true);
+
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+
+        choiceFrame.setSize(screenWidth / 3, screenHeight / 2);
+        choiceFrame.setResizable(false);
+        choiceFrame.setLocation(500, 250);
+
+        choice.setFont(new Font("Monospaced", Font.BOLD, 12));
+        choice.setColumns(50);
+        choice.setRows(5);
+
+        choice.append("1. Check Your Balance\n");
+        choice.append("2. Deposit Money\n");
+        choice.append("3. Withdraw Money\n");
+        choice.append("4. Change your pin\n");
+        choice.append("5. Exit\n");
+
+        while (true) {
+            String userInput = JOptionPane.showInputDialog(null, "Choose your operation ");
+
+            int userChoice = Integer.parseInt(userInput);
+
+            switch (userChoice) {
+                case 1:
+
+                    JOptionPane.showMessageDialog(null, "Balance : " + balance);
+                    break;
+
+                case 2:
+
+                    String deposit = JOptionPane.showInputDialog(null, "Enter the amount ");
+                    int inputDeposit = Integer.parseInt(deposit);
+                    balance += inputDeposit;
+                    JOptionPane.showMessageDialog(null, "Amount Deposited : " + deposit + "\n Balance : " + balance);
+                    break;
+
+                case 3:
+
+                    String withdraw = JOptionPane.showInputDialog(null, "Enter the amount ");
+                    int inputWithdraw = Integer.parseInt(withdraw);
+
+                    while (inputWithdraw > balance) {
+                        withdraw = JOptionPane.showInputDialog(null, "Insufficient Funds! Enter less amount!",
+                                JOptionPane.ERROR_MESSAGE);
+                        inputWithdraw = Integer.parseInt(withdraw);
+                    }
+
+                    if (inputWithdraw < balance) {
+                        balance -= inputWithdraw;
+                        JOptionPane.showMessageDialog(null,
+                                "Amount Withdrawed : " + inputWithdraw + "\n Balance : " + balance);
+                    }
+
+                    break;
+
+                case 4:
+
+                    String currPin = JOptionPane.showInputDialog(null, "Enter your current pin ");
+                    int currentPin = Integer.parseInt(currPin);
+                    int attempts = 3;
+
+                    while (currentPin != pin && attempts != 1) {
+                        --attempts;
+                        currPin = JOptionPane.showInputDialog(null, "Incorrect Pin!\n Enter the correct Pin",
+                                "Invalid Pin", JOptionPane.ERROR_MESSAGE);
+                        currentPin = Integer.parseInt(currPin);
+                    }
+
+                    if (attempts == 1 && currentPin != pin) {
+                        JOptionPane.showMessageDialog(null, "Account Locked!\n Exiting the ATM!",
+                                "Exceeded Maximum Attempts", JOptionPane.ERROR_MESSAGE);
+                        System.exit(0);
+                    }
+
+                    if (currentPin == pin) {
+                        String nPin = JOptionPane.showInputDialog(null, "Enter your new pin");
+                        int updatedPin = Integer.parseInt(nPin);
+                        pin = updatedPin;
+                        JOptionPane.showMessageDialog(null, "Pin Updated!");
+                    }
+
+                    break;
+
+                case 5:
+
+                    JOptionPane.showMessageDialog(null, "Exiting the ATM!");
+                    System.exit(0);
+                    break;
+
+            }
+        }
+
+    }
+
+    public static void main(String args[]) {
+
+        SwingUtilities.invokeLater(() -> {
+            String inputPin = JOptionPane.showInputDialog(null, "Enter your PIN: ");
+            int enteredPin = Integer.parseInt(inputPin);
+            int attempts = 3;
+
+            while (enteredPin != pin && attempts != 1) {
+                --attempts;
+                inputPin = JOptionPane.showInputDialog(null, "Incorrect Pin! Try Again!", "Invalid Pin",
+                        JOptionPane.ERROR_MESSAGE);
+                enteredPin = Integer.parseInt(inputPin);
+            }
+
+            if (attempts == 1 && enteredPin != pin) {
+                JOptionPane.showMessageDialog(null, "Account Locked!\n Exiting the ATM!", "Exceed Maximum Attempts",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+
+            if (enteredPin == pin)
+                displayChoices();
+        });
+
+    }
+}
